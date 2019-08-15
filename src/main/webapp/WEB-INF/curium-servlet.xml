@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:mvc="http://www.springframework.org/schema/mvc"
+	xmlns:tx="http://www.springframework.org/schema/tx"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.2.xsd
+		http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-4.3.xsd
+		http://www.springframework.org/schema/mvc http://www.springframework.org/schema/mvc/spring-mvc-4.3.xsd
+		
+		http://www.springframework.org/schema/tx
+		http://www.springframework.org/schema/tx/spring-tx.xsd">
+
+
+<context:component-scan base-package="com.curium.cbt"></context:component-scan>
+	<mvc:annotation-driven></mvc:annotation-driven>
+
+<bean id="myDataSource" class="com.mchange.v2.c3p0.ComboPooledDataSource" destroy-method="close">
+     <property name="driverClass" value="org.postgresql.Driver" />
+	<property name="jdbcUrl" value="jdbc:postgresql://aa1s7fegl34p1n6.czlxzczvljh4.us-east-2.rds.amazonaws.com:5432/quiz" />
+	<property name="user" value="quizapp" />
+	<property name="password" value="primaxquiz" />
+	<!--  
+	 <property name="driverClass" value="org.postgresql.Driver" />
+	<property name="jdbcUrl" value="jdbc:postgresql:cbt" />
+	<property name="user" value="postgres" />
+	<property name="password" value="ben" />
+	-->
+	<property name="minPoolSize" value="5" />
+	<property name="maxPoolSize" value="10" />
+	<property name="maxIdleTime" value="30000" />
+</bean> 
+ 
+ <bean id="sessionFactory" class="org.springframework.orm.hibernate5.LocalSessionFactoryBean">
+		<property name="dataSource" ref="myDataSource" />
+		<property name="packagesToScan" value="com.curium.cbt.entity" />
+		<property name="hibernateProperties">
+			<props>
+				<prop key="hibernate.dialect">org.hibernate.dialect.MySQLDialect</prop>
+				<prop key="hibernate.show_sql">true</prop>
+			</props>
+		</property>
+</bean>
+<bean id="myTransactionManager" class="org.springframework.orm.hibernate5.HibernateTransactionManager">
+	<property name="sessionFactory" ref="sessionFactory" />
+</bean>
+
+
+	
+<tx:annotation-driven transaction-manager="myTransactionManager" />	
+
+
+
+
+</beans>
